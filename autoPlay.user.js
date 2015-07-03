@@ -937,9 +937,9 @@ function toggleFingering(event) {
 	w.CSceneGame.prototype.ClearNewPlayer = function(){};
 
 	if(!s().m_spriteFinger) {
-		w.WebStorage.SetLocal('mg_how2click', 0);
+		w.localStorage.setItem('minigame_how2click', 0);
 		s().CheckNewPlayer();
-		w.WebStorage.SetLocal('mg_how2click', 1);
+		w.localStorage.setItem('minigame_how2click', 1);
 	}
 
 	if(event !== undefined) {
