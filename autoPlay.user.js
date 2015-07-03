@@ -288,11 +288,20 @@ function firstRun() {
 		if (node && node.parentNode) {
 			node.parentNode.removeChild( node );
 		}
+		node = document.getElementById("stats");
+		if (node && node.parentNode) {
+			node.parentNode.removeChild( node );
+		}
+		node = document.getElementById("player_stats");
+		if (node && node.parentNode) {
+			node.parentNode.removeChild( node );
+		}
 		document.body.style.backgroundPosition = "0 0";
 	}
 
 	var info_box = document.querySelector(".leave_game_helper");
 	info_box.className = "options_box";
+	info_box.hidden = false;
 	var options_menus = document.querySelectorAll(".game_options");
 	var options_menu = options_menus[options_menus.length - 1]; // Get last .game_options
 	var sfx_btn = document.querySelector(".toggle_sfx_btn");
