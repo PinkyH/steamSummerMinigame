@@ -522,15 +522,6 @@ function MainLoop() {
 					"#aaf"
 				);
 
-				if( s().m_rgStoredCrits.length > 0 ) {
-					var rgDamage = s().m_rgStoredCrits.reduce(function(a,b) {
-						return a + b;
-					});
-					s().m_rgStoredCrits.length = 0;
-
-					s().DoCritEffect( rgDamage, enemy.m_Sprite.position.x - (enemy.m_nLane * 440), enemy.m_Sprite.position.y + 17, 'Crit!' );
-				}
-
 				var goldPerClickPercentage = s().m_rgGameData.lanes[s().m_rgPlayerData.current_lane].active_player_ability_gold_per_click;
 				if (goldPerClickPercentage > 0 && enemy.m_data.hp > 0) {
 					var goldPerSecond = enemy.m_data.gold * goldPerClickPercentage * absoluteCurrentClickRate;
