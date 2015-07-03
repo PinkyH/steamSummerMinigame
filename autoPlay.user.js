@@ -293,7 +293,8 @@ function firstRun() {
 
 	var info_box = document.querySelector(".leave_game_helper");
 	info_box.className = "options_box";
-	var options_menu = document.querySelector(".game_options");
+	var options_menus = document.querySelectorAll(".game_options");
+	var options_menu = options_menus[options_menus.length - 1]; // Get last .game_options
 	var sfx_btn = document.querySelector(".toggle_sfx_btn");
 	options_menu.insertBefore(info_box, sfx_btn);
 
@@ -1726,8 +1727,8 @@ function toggleAbilityVisibility(abilityId, show) {
 		elem = document.getElementById('abilityitem_' + abilityId);
 	}
 
-	if (elem && elem.childElements() && elem.childElements().length >= 1) {
-		elem.childElements()[0].style.visibility = vis;
+	if (elem && elem.children && elem.children.length >= 1) {
+		elem.children[0].style.visibility = vis;
 	}
 }
 
@@ -1747,8 +1748,8 @@ function isAbilityEnabled(abilityId) {
 		elem = document.getElementById('abilityitem_' + abilityId);
 	}
 
-	if (elem && elem.childElements() && elem.childElements().length >= 1) {
-		return elem.childElements()[0].style.visibility !== "hidden";
+	if (elem && elem.children && elem.children.length >= 1) {
+		return elem.children[0].style.visibility !== "hidden";
 	}
 	return false;
 }
