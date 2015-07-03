@@ -2,7 +2,7 @@
 // @name [SteamDB] Monster Minigame Script
 // @namespace https://github.com/Contex/steamSummerMinigame
 // @description A script that runs the Steam Monster Minigame for you.
-// @version 5.4.0
+// @version 5.5.0
 // @match *://steamdb.party*
 // @match *://steamdb.party*
 // @grant none
@@ -364,7 +364,11 @@ function firstRun() {
 }
 
 function disableParticles() {
-	if (w.CSceneGame) {
+	if (w.CSceneGame
+		&& w.g_Minigame
+		&& s().m_bRunning
+		&& s().m_rgPlayerTechTree
+		&& s().m_rgGameData) {
 		w.CSceneGame.prototype.DoScreenShake = function() {};
 
 		if(removeParticles) {
