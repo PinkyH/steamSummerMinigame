@@ -291,13 +291,6 @@ function firstRun() {
 		document.body.style.backgroundPosition = "0 0";
 	}
 
-	// Add "players in game" label
-	var titleActivity = document.querySelector( '.title_activity' );
-	var playersInGame = document.createElement( 'span' );
-	playersInGame.innerHTML = '<span id=\"players_in_game\">0/1500</span>&nbsp;Players in room<br>';
-	titleActivity.insertBefore(playersInGame, titleActivity.firstChild);
-	ELEMENTS.PlayersInGame = document.getElementById("players_in_game");
-
 	var info_box = document.querySelector(".leave_game_helper");
 	info_box.className = "options_box";
 	var options_menu = document.querySelector(".game_options");
@@ -456,8 +449,6 @@ function MainLoop() {
 				});
 			}
 		}
-
-		updatePlayersInGame();
 
 		if(level !== lastLevel) {
 			if(lastLevel > 0) {
@@ -1176,15 +1167,6 @@ function displayText(x, y, strText, color) {
 	text.m_easeAlpha = e;
 
 	s().m_rgClickNumbers.push(text);
-}
-
-function updatePlayersInGame() {
-	var laneData = s().m_rgLaneData;
-	var totalPlayers =
-		laneData[ 0 ].players +
-		laneData[ 1 ].players +
-		laneData[ 2 ].players;
-	ELEMENTS.PlayersInGame.textContent = totalPlayers + "/1500";
 }
 
 function goToRainingLane() {
