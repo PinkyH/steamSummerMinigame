@@ -1662,7 +1662,9 @@ function useAbilities(level)
 
 function attemptRespawn() {
 	if ((s().m_bIsDead) && ((s().m_rgPlayerData.time_died) + 5) < (s().m_nTime)) {
-		w.RespawnPlayer();
+		s().m_rgAbilityQueue.push( {
+			'ability': k_ETowerAttackAbility_Respawn
+		} );
 	}
 }
 
