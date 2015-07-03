@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name [SteamDB] Monster Minigame Script
-// @namespace https://github.com/SteamDatabase/steamSummerMinigame
+// @namespace https://github.com/Contex/steamSummerMinigame
 // @description A script that runs the Steam Monster Minigame for you.
 // @version 5.3.3
-// @match *://steamcommunity.com/minigame/towerattack*
-// @match *://steamcommunity.com//minigame/towerattack*
+// @match *://steamdb.party*
+// @match *://steamdb.party*
 // @grant none
 // ==/UserScript==
 
@@ -1662,9 +1662,9 @@ function useAbilities(level)
 
 function attemptRespawn() {
 	if ((s().m_bIsDead) && ((s().m_rgPlayerData.time_died) + 5) < (s().m_nTime)) {
-		s().m_rgAbilityQueue.push( {
+		s().m_rgAbilityQueue.push({
 			'ability': k_ETowerAttackAbility_Respawn
-		} );
+		});
 	}
 }
 
