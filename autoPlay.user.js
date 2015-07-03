@@ -162,7 +162,7 @@ var GAME_STATUS = {
 // if not yet available, they will be disabled in firstRun
 disableParticles();
 
-if(!getPreferenceBoolean("alertShown", false)) {
+/*if(!getPreferenceBoolean("alertShown", false)) {
 	w.ShowConfirmDialog(
 		'Welcome to SteamDB\'s Monster Minigame Script',
 
@@ -188,7 +188,7 @@ if(!getPreferenceBoolean("alertShown", false)) {
 			}
 		}
 	});
-}
+}*/
 
 function s() {
 	return w.g_Minigame.m_CurrentScene;
@@ -438,7 +438,7 @@ function MainLoop() {
 		if(!selfDestructed && timeLeft <= 1) {
 			selfDestructed = true;
 
-			ShowAlertDialog('SteamDB\'s Minigame Script Alert', 'This is the final day of Steam Monster Game, make sure to delete all<br>the scripts you\'ve installed for this game after the game is over.');
+			//ShowAlertDialog('SteamDB\'s Minigame Script Alert', 'This is the final day of Steam Monster Game, make sure to delete all<br>the scripts you\'ve installed for this game after the game is over.');
 
 			if(localStorage !== 'undefined') {
 				Object.keys(localStorage).forEach(function(key) {
