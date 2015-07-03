@@ -4,7 +4,6 @@
 // @description A script that runs the Steam Monster Minigame for you.
 // @version 5.5.0
 // @match *://steamdb.party*
-// @match *://steamdb.party*
 // @grant none
 // @updateURL https://github.com/Contex/steamSummerMinigame/raw/master/autoPlay.user.js
 // @downloadURL https://github.com/Contex/steamSummerMinigame/raw/master/autoPlay.user.js
