@@ -448,7 +448,7 @@ function MainLoop() {
 
 		attemptRespawn();
 
-		var timeLeft = getTimeleft(); // Time left in minutes
+		/*var timeLeft = getTimeleft(); // Time left in minutes
 
 		if(timeLeft <= 5) {
 			useAllAbilities();
@@ -469,7 +469,7 @@ function MainLoop() {
 					}
 				});
 			}
-		}
+		}*/
 
 		if(level !== lastLevel) {
 			if(lastLevel > 0) {
