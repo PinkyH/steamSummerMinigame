@@ -2,7 +2,7 @@
 // @name [SteamDB] Monster Minigame Script
 // @namespace https://github.com/Contex/steamSummerMinigame
 // @description A script that runs the Steam Monster Minigame for you.
-// @version 5.5.0
+// @version 5.5.1
 // @match *://steamdb.party*
 // @grant none
 // @updateURL https://github.com/Contex/steamSummerMinigame/raw/master/autoPlay.user.js
@@ -1980,7 +1980,7 @@ function appendBreadcrumbsTitleInfo() {
 
 	element = document.createElement('span');
 	element.className = "bc_span bc_level";
-	element.textContent = 'Level: 0, Expected Level: 0, Likely Level: 0';
+	element.textContent = 'Level: 0';//, Expected Level: 0, Likely Level: 0';
 	breadcrumbs.appendChild(element);
 	ELEMENTS.ExpectedLevel = element;
 
@@ -2001,10 +2001,10 @@ function updateLevelInfoTitle(level, lastLevel)
 	var rem_time = countdown(exp_lvl.remaining_time);
 
 	ELEMENTS.ExpectedLevel.textContent =
-		'Level: ' + w.FormatNumberForDisplay(level) +
-		', Expected Level: ' + w.FormatNumberForDisplay(exp_lvl.expected_level) +
+		'Level: ' + w.FormatNumberForDisplay(level); //+
+		/*', Expected Level: ' + w.FormatNumberForDisplay(exp_lvl.expected_level) +
 		', Likely Level: ' + w.FormatNumberForDisplay(exp_lvl.likely_level) +
-		', Last jump: ' + (lastLevel > 0 ? w.FormatNumberForDisplay(level - lastLevel) : 0);
+		', Last jump: ' + (lastLevel > 0 ? w.FormatNumberForDisplay(level - lastLevel) : 0);*/
 
 	//ELEMENTS.RemainingTime.textContent = 'Remaining Time: ' + rem_time.hours + ' hours, ' + rem_time.minutes + ' minutes.';
 }
