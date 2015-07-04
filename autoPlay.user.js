@@ -2001,7 +2001,8 @@ function updateLevelInfoTitle(level, lastLevel)
 	var rem_time = countdown(exp_lvl.remaining_time);
 
 	ELEMENTS.ExpectedLevel.textContent =
-		'Level: ' + w.FormatNumberForDisplay(level); //+
+		'Level: ' + w.FormatNumberForDisplay(level) +
+		', Last jump: ' + (lastLevel > 0 ? w.FormatNumberForDisplay(level - lastLevel) : 0);
 		/*', Expected Level: ' + w.FormatNumberForDisplay(exp_lvl.expected_level) +
 		', Likely Level: ' + w.FormatNumberForDisplay(exp_lvl.likely_level) +
 		', Last jump: ' + (lastLevel > 0 ? w.FormatNumberForDisplay(level - lastLevel) : 0);*/
