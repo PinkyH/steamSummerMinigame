@@ -41,12 +41,12 @@ This fork has:
 
 1. Open Tapermonkey's dashboard.
 2. Click on the `Utilities` tab on the right.
-3. Paste `https://raw.githubusercontent.com/SteamDatabase/steamSummerMinigame/master/autoPlay.user.js` into the text area, and click `Import`.
+3. Paste `https://raw.githubusercontent.com/TomG777/steamSummerMinigame/master/autoPlay.user.js` into the text area, and click `Import`.
 4. When the editor has loaded, click `Install` (*NOT* `Process with Chrome`).
 
 ### Greasemonkey ###
 
-1. Navigate to `https://raw.githubusercontent.com/SteamDatabase/steamSummerMinigame/master/autoPlay.user.js`.
+1. Navigate to `https://raw.githubusercontent.com/TomG777/steamSummerMinigame/master/autoPlay.user.js`.
 2. Right click on the page, and click `Save Page As`.
 3. While Firefox is still open, open a File Manager of any sort, and navigate to the directory you saved the script.
 4. Drag & drop the script file onto the Firefox window.
@@ -55,23 +55,23 @@ This fork has:
 ### Manual ###
 
 ##### Chrome #####
-1. Open https://raw.githubusercontent.com/SteamDatabase/steamSummerMinigame/master/autoPlay.user.js
+1. Open https://raw.githubusercontent.com/TomG777/steamSummerMinigame/master/autoPlay.user.js
 2. Select All, Copy.
 3. Navigate to `http://steamcommunity.com/minigame/` and join or start a game.
 4. Press `Ctrl + Shift + J`.
 5. Paste into the javascript input, and hit `Enter`.
 
 ##### Firefox #####
-1. Open https://raw.githubusercontent.com/SteamDatabase/steamSummerMinigame/master/autoPlay.user.js
+1. Open https://raw.githubusercontent.com/TomG777/steamSummerMinigame/master/autoPlay.user.js
 2. Select All, Copy.
-3. Navigate to `http://steamcommunity.com/minigame/` and join or start a game.
+3. Navigate to `https://monsterminigame.doctormckay.com` and join or start a game.
 4. Press `Ctrl + Shift + K`.
 5. Paste into the javascript input, and hit `Enter`.
 
 ##### Internet Explorer / Microsoft Edge #####
-1. Open https://raw.githubusercontent.com/SteamDatabase/steamSummerMinigame/master/autoPlay.user.js
+1. Open https://raw.githubusercontent.com/TomG777/steamSummerMinigame/master/autoPlay.user.js
 2. Select All, Copy.
-3. Navigate to `http://steamcommunity.com/minigame/` and join or start a game.
+3. Navigate to `https://monsterminigame.doctormckay.com` and join or start a game.
 4. Press `F12` and navigate to the `Console` tab.
 5. Paste into the javascript input, and hit `Enter`.
 
