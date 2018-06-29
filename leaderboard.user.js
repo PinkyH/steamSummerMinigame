@@ -3,8 +3,7 @@
 // @namespace    https://github.com/SteamDatabase/steamSummerMinigame
 // @version      1.0
 // @description  Display leaderboards from http://steamga.me
-// @match        *://steamcommunity.com/minigame/towerattack*
-// @match        *://steamcommunity.com//minigame/towerattack*
+// @match        *://monsterminigame.doctormckay.com/play/*
 // @grant        GM_xmlhttpRequest
 // @grant        unsafeWindow
 // ==/UserScript==
