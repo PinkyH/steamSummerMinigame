@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name [SteamDB] Monster Minigame Script
-// @namespace https://github.com/Contex/steamSummerMinigame
+// @namespace https://github.com/TomG777/steamSummerMinigame/
 // @description A script that runs the Steam Monster Minigame for you.
 // @version 5.5.1
 // @match *://monsterminigame.doctormckay.com/*
 // @grant none
-// @updateURL https://github.com/Contex/steamSummerMinigame/raw/master/autoPlay.user.js
-// @downloadURL https://github.com/Contex/steamSummerMinigame/raw/master/autoPlay.user.js
+// @updateURL https://github.com/TomG777/steamSummerMinigame/blob/master/autoPlay.user.js
+// @downloadURL https://github.com/TomG777/steamSummerMinigame/blob/master/autoPlay.user.js
 // ==/UserScript==
 
 // IMPORTANT: Update the @version property above to a higher number such as 1.1 and 1.2 when you update the script! Otherwise, Tamper / Greasemonkey users will not update automatically.
