@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name [SteamDB] Monster Minigame Script
+// @name [SteamDB] Monster Minigame 2018 Script
 // @namespace https://github.com/TomG777/steamSummerMinigame/
 // @description A script that runs the Steam Monster Minigame for you.
 // @version 5.5.1
@@ -45,6 +45,23 @@ var enableAutoRefresh = getPreferenceBoolean("enableAutoRefresh", isUserScript);
 var autoRefreshMinutes = 30;
 var autoRefreshMinutesRandomDelay = 10;
 var autoRefreshSecondsCheckLoadedDelay = 30;
+
+	//- ALL HAIL GOLD HELM -//
+var praiseGoldHelm = getPreferenceBoolean("praiseGoldHelm", true);
+
+var goldHelmURLs = {
+		"Original Gold Helm": "https://i.imgur.com/1zRXQgm.png",
+		"Moving Gold Helm": "http://i.imgur.com/XgT8Us8.gif",
+		"Golden Gaben": "http://i.imgur.com/ueDBBrA.png",
+		"Gaben + Snoop Dogg": "http://i.imgur.com/9R0436k.gif",
+		"Wormhole Gaben": "http://i.imgur.com/6BuBgxY.png",
+		"MSG2015": "http://i.imgur.com/zHI6C6X.png",
+		"Matrix Gaben": "http://i.imgur.com/titbsfQ.png",
+		"Praising Intensifies": "http://i.imgur.com/1ynXett.gif"
+	};
+var goldHelmUI = getPreference("praiseGoldHelmImage", goldHelmURLs["Golden Gaben"]);
+var fixedUI = "http://i.imgur.com/ieDoLnx.png";
+	//- PRAISE LORD GABEN -//
 
 // DO NOT MODIFY
 var selfDestructed = false;
@@ -267,7 +284,7 @@ function firstRun() {
 		".options_column input[name=setLogLevel] {width: 25px;}",
 		".options_column span.asterisk {line-height: 14px;}",
 		// Element lock box
-		".lock_elements_box {width: 165px; top: -76px; left: 303px; box-sizing: border-box; line-height: 1rem; padding: 7px 10px; position: absolute; color: #EDEDED;}",
+		".lock_elements_box {top:50px; background-color: #0004; box-sizing: border-box; line-height: 1rem; position: absolute; color: #EDEDED;}",
 		// Breadcrumbs
 		".bc_span {text-shadow: 1px 1px 0px rgba( 0, 0, 0, 0.3 );}",
 		".bc_room {color: #D4E157;}",
@@ -305,6 +322,8 @@ function firstRun() {
 		}
 		document.body.style.backgroundPosition = "0 0";
 	}
+
+	fixActiveCapacityUI();
 
 	var info_box = document.querySelector(".leave_game_helper");
 	info_box.className = "options_box";
@@ -344,7 +363,10 @@ function firstRun() {
 	}
 
 	options2.appendChild(makeCheckBox("enableFingering", "Enable targeting pointer", enableFingering, toggleFingering, false));
-	options2.appendChild(makeNumber("setLogLevel", "Change the log level (you shouldn't need to touch this)", logLevel, 0, 5, updateLogLevel));
+  options2.appendChild(makeNumber("setLogLevel", "Change the log level (you shouldn't need to touch this)", logLevel, 0, 5, updateLogLevel));
+  	//- Say hi to Snoop! -//
+  options2.appendChild(makeCheckBox("praiseGoldHelm", "Praise Gold Helm!", praiseGoldHelm, togglePraise, false));
+	options2.appendChild(makeDropdown("praiseGoldHelmImage", "", goldHelmUI, goldHelmURLs, changePraiseImage));
 
 	info_box.appendChild(options2);
 
@@ -361,6 +383,66 @@ function firstRun() {
 
 	isPastFirstRun = true;
 }
+
+	//- Let's steal some functions from wChill -//
+function fixActiveCapacityUI() {
+	if(praiseGoldHelm) {
+		w.$J('.tv_ui').css('background-image', 'url(' + goldHelmUI + ')');
+		w.$J(".pagecontent").attr("style", "padding-bottom: 0px; background-image: url('http://cdn.akamai.steamstatic.com/steamcommunity/public/images/items/368020/7b933b3766d64ec0525c86891dedb4b699a25fb9.jpg')");
+	} else {
+		w.$J('.tv_ui').css('background-image', 'url(' + fixedUI + ')');
+	}
+	w.$J('#activeinlanecontainer').css('height', '154px');
+	w.$J('#activitycontainer').css('height', '270px');
+	w.$J('#activityscroll').css('height', '270px');
+}
+
+function makeDropdown(name, desc, value, values, listener) {
+		var label = document.createElement("label");
+		var description = document.createTextNode(desc);
+		var drop = document.createElement("select");
+
+		for(var k in values) {
+			var choice = document.createElement("option");
+			choice.value = values[k];
+			choice.textContent = k;
+			if(values[k] == value) {
+				choice.selected = true;
+			}
+			drop.appendChild(choice);
+		}
+
+		drop.name = name;
+		drop.style.marginRight = "5px";
+		drop.onchange = listener;
+
+		label.appendChild(drop);
+		label.appendChild(description);
+		label.appendChild(document.createElement("br"));
+		return label;
+}
+function handleDropdown(event) {
+	var dropdown = event.target;
+	setPreference(dropdown.name, dropdown.value);
+
+	w[dropdown.name] = dropdown.value;
+	return dropdown.value;
+}
+
+function togglePraise(event) {
+	if (event !== undefined) {
+		praiseGoldHelm = handleCheckBox(event);
+	}
+	fixActiveCapacityUI();
+}
+
+function changePraiseImage(event) {
+	if (event !== undefined) {
+		goldHelmUI = handleDropdown(event);
+	}
+	fixActiveCapacityUI();
+}
+	//- we are terrible people -//
 
 function disableParticles() {
 	if (w.CSceneGame
