@@ -1,12 +1,10 @@
 // ==UserScript==
-// @name [SteamDB] Monster Minigame 2018 Script
-// @namespace https://github.com/TomG777/steamSummerMinigame/
-// @description A script that runs the Steam Monster Minigame for you.
-// @version 5.5.1
+// @name Monster Minigame 2018 Script
+// @namespace https://github.com/PinkyH/steamSummerMinigame/
+// @description Modified script that runs the Steam Monster Minigame for you.
+// @version 5.5.2
 // @match *://monsterminigame.doctormckay.com/*
 // @grant none
-// @updateURL https://github.com/TomG777/steamSummerMinigame/blob/master/autoPlay.user.js
-// @downloadURL https://github.com/TomG777/steamSummerMinigame/blob/master/autoPlay.user.js
 // ==/UserScript==
 
 // IMPORTANT: Update the @version property above to a higher number such as 1.1 and 1.2 when you update the script! Otherwise, Tamper / Greasemonkey users will not update automatically.
@@ -50,6 +48,7 @@
 	var praiseGoldHelm = getPreferenceBoolean("praiseGoldHelm", true);
 
 	var goldHelmURLs = {
+		"Classic Steam TV": "http://i.imgur.com/ieDoLnx.png",
 		"Original Gold Helm": "https://i.imgur.com/1zRXQgm.png",
 		"Moving Gold Helm": "http://i.imgur.com/XgT8Us8.gif",
 		"Golden Gaben": "http://i.imgur.com/ueDBBrA.png",
@@ -57,10 +56,27 @@
 		"Wormhole Gaben": "http://i.imgur.com/6BuBgxY.png",
 		"MSG2015": "http://i.imgur.com/zHI6C6X.png",
 		"Matrix Gaben": "http://i.imgur.com/titbsfQ.png",
-		"Praising Intensifies": "http://i.imgur.com/1ynXett.gif"
+		"Praising Intensifies": "http://i.imgur.com/1ynXett.gif",
+		"Platinum Edition": "https://i.imgur.com/JYCNVgH.png" //welcome 2018!
 	};
-	var goldHelmUI = getPreference("praiseGoldHelmImage", goldHelmURLs["Golden Gaben"]);
-	var fixedUI = "http://i.imgur.com/ieDoLnx.png";
+	var goldHelmUI = getPreference("praiseGoldHelmUI", goldHelmURLs["Golden Gaben"]);
+	var fixedUI = "/assets/images/game_frame_tv.png";
+
+		var backgroundURLs = {
+		"Classic Gradient": "https://i.imgur.com/5NYUQbq.png",
+		"Dominic The Mobile Apocalypse": "https://i.imgur.com/N66dHN1.jpg",
+		"Bob the Helldozer": "https://i.imgur.com/jq2EmEO.jpg",
+		"Blitzkrieg the Zombie Tank": "https://i.imgur.com/O4hOJF8.jpg",
+		"Cerulean Carmouth the Cen-Car": "https://i.imgur.com/x58vf9k.jpg",
+		"Sigmond the Terror-Dactyl": "https://i.imgur.com/so0Aqkx.jpg",
+		"Crusta-Sean the Pirate King": "https://i.imgur.com/Oheervu.jpg",
+		"Dansky the Wrath of Winter": "https://i.imgur.com/EDXVi6Y.jpg",
+		"Dire Frog the Tyrant King": "https://i.imgur.com/tPdAn5c.jpg",
+		"Z-Lo the 5th Horseman": "https://i.imgur.com/vI7QvAy.jpg",
+		"Gold Helm The Spice Lord": "https://i.imgur.com/uhsWoqh.jpg"
+	};
+	var goldHelmBG = getPreference("praiseGoldHelmBG", backgroundURLs["Gold Helm The Spice Lord"]);
+	var fixedBG = "/assets/images/background_top_gradient.png";
 		//- PRAISE LORD GABEN -//
 
 	// DO NOT MODIFY
@@ -261,8 +277,6 @@
 		var styleNode = document.createElement('style');
 		styleNode.type = 'text/css';
 		var styleText = [
-			// Page content
-			".pagecontent {padding: 0}",
 			// Align abilities to the left
 			"#abilitiescontainer {text-align: left;}",
 			// Activitylog and ability list
@@ -284,7 +298,7 @@
 			".options_column input[name=setLogLevel] {width: 25px;}",
 			".options_column span.asterisk {line-height: 14px;}",
 			// Element lock box
-			".lock_elements_box {top:50px; background-color: #0004; box-sizing: border-box; line-height: 1rem; position: absolute; color: #EDEDED;}",
+			".lock_elements_box {top:50px; background-color: #0007; box-sizing: border-box; line-height: 1rem; position: absolute; color: #EDEDED;}",
 			// Breadcrumbs
 			".bc_span {text-shadow: 1px 1px 0px rgba( 0, 0, 0, 0.3 );}",
 			".bc_room {color: #D4E157;}",
@@ -363,10 +377,11 @@
 		}
 
 		options2.appendChild(makeCheckBox("enableFingering", "Enable targeting pointer", enableFingering, toggleFingering, false));
-	  options2.appendChild(makeNumber("setLogLevel", "Change the log level (you shouldn't need to touch this)", logLevel, 0, 5, updateLogLevel));
-	  	//- Say hi to Snoop! -//
-	  options2.appendChild(makeCheckBox("praiseGoldHelm", "Praise Gold Helm!", praiseGoldHelm, togglePraise, false));
-		options2.appendChild(makeDropdown("praiseGoldHelmImage", "", goldHelmUI, goldHelmURLs, changePraiseImage));
+		options2.appendChild(makeNumber("setLogLevel", "Change the log level (you shouldn't need to touch this)", logLevel, 0, 5, updateLogLevel));
+			//- Say hi to Snoop! -//
+		options2.appendChild(makeCheckBox("praiseGoldHelm", "Praise Gold Helm!", praiseGoldHelm, togglePraise, false));
+		options2.appendChild(makeDropdown("praiseGoldHelmUI", "", goldHelmUI, goldHelmURLs, changePraiseImage));
+		options2.appendChild(makeDropdown("praiseGoldHelmBG", "", goldHelmBG, backgroundURLs, changeBGImage));
 
 		info_box.appendChild(options2);
 
@@ -388,9 +403,10 @@
 	function fixActiveCapacityUI() {
 		if(praiseGoldHelm) {
 			w.$J('.tv_ui').css('background-image', 'url(' + goldHelmUI + ')');
-			w.$J(".pagecontent").attr("style", "padding-bottom: 0px; background-image: url('http://cdn.akamai.steamstatic.com/steamcommunity/public/images/items/368020/7b933b3766d64ec0525c86891dedb4b699a25fb9.jpg')");
+			w.$J('body').attr('style', 'background-image: url(' + goldHelmBG + ')');
 		} else {
 			w.$J('.tv_ui').css('background-image', 'url(' + fixedUI + ')');
+			w.$J('body').attr('style', 'background-image: url(' + fixedBG + ')');
 		}
 		w.$J('#activeinlanecontainer').css('height', '154px');
 		w.$J('#activitycontainer').css('height', '270px');
@@ -440,6 +456,13 @@
 	function changePraiseImage(event) {
 		if (event !== undefined) {
 			goldHelmUI = handleDropdown(event);
+		}
+		fixActiveCapacityUI();
+	}
+
+	function changeBGImage(event) {
+		if (event !== undefined) {
+			goldHelmBG = handleDropdown(event);
 		}
 		fixActiveCapacityUI();
 	}
@@ -583,7 +606,7 @@
 
 				absoluteCurrentClickRate = currentClickRate;
 				// Disable autoclicking if DPS would be too high against a boss (doubtful but possible?)
-				// Doesn't do very good DPS calculation (ignores crit chance / elem mult) 
+				// Doesn't do very good DPS calculation (ignores crit chance / elem mult)
 				// but should still be very generous
 				if (level >= CONTROL.speedThreshold && levelRainingMod === 0 && enemy && enemy.m_data.type == ENEMY_TYPE.BOSS) {
 					var currentCritMultiplier = s().m_rgPlayerTechTree.damage_multiplier_crit;
