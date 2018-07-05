@@ -1,12 +1,10 @@
 // ==UserScript==
-// @name [SteamDB] Monster Minigame 2018 Script
-// @namespace https://github.com/TomG777/steamSummerMinigame/
-// @description A script that runs the Steam Monster Minigame for you.
-// @version 5.5.1
+// @name Monster Minigame 2018 Script
+// @namespace https://github.com/PinkyH/steamSummerMinigame/
+// @description Modified script that runs the Steam Monster Minigame for you.
+// @version 5.5.2
 // @match *://monsterminigame.doctormckay.com/*
 // @grant none
-// @updateURL https://github.com/TomG777/steamSummerMinigame/blob/master/autoPlay.user.js
-// @downloadURL https://github.com/TomG777/steamSummerMinigame/blob/master/autoPlay.user.js
 // ==/UserScript==
 
 // IMPORTANT: Update the @version property above to a higher number such as 1.1 and 1.2 when you update the script! Otherwise, Tamper / Greasemonkey users will not update automatically.
@@ -35,6 +33,7 @@
 	var removeFlinching = getPreferenceBoolean("removeFlinching", true);
 	var removeCritText = getPreferenceBoolean("removeCritText", false);
 	var removeAllText = getPreferenceBoolean("removeAllText", false);
+	var enableChatbox = getPreferenceBoolean("enableChatbox", false);
 	var enableFingering = getPreferenceBoolean("enableFingering", true);
 	var disableRenderer = getPreferenceBoolean("disableRenderer", true);
 
@@ -46,22 +45,43 @@
 	var autoRefreshMinutesRandomDelay = 10;
 	var autoRefreshSecondsCheckLoadedDelay = 30;
 
-		//- ALL HAIL GOLD HELM -//
-	var praiseGoldHelm = getPreferenceBoolean("praiseGoldHelm", true);
+	//- SELECT YOUR UI -//
+	var UI_type = getPreference("UI_type", "noUI");
 
 	var goldHelmURLs = {
-		"Original Gold Helm": "https://i.imgur.com/1zRXQgm.png",
-		"Moving Gold Helm": "http://i.imgur.com/XgT8Us8.gif",
-		"Golden Gaben": "http://i.imgur.com/ueDBBrA.png",
-		"Gaben + Snoop Dogg": "http://i.imgur.com/9R0436k.gif",
-		"Wormhole Gaben": "http://i.imgur.com/6BuBgxY.png",
-		"MSG2015": "http://i.imgur.com/zHI6C6X.png",
-		"Matrix Gaben": "http://i.imgur.com/titbsfQ.png",
-		"Praising Intensifies": "http://i.imgur.com/1ynXett.gif"
+		"Classic Steam TV": "//i.imgur.com/ieDoLnx.png",
+		"Original Gold Helm": "//i.imgur.com/1zRXQgm.png",
+		"Moving Gold Helm": "//i.imgur.com/XgT8Us8.gif",
+		"Golden Gaben": "//i.imgur.com/ueDBBrA.png",
+		"Gaben + Snoop Dogg": "//i.imgur.com/9R0436k.gif",
+		"Wormhole Gaben": "//i.imgur.com/6BuBgxY.png",
+		"MSG2015": "//i.imgur.com/zHI6C6X.png",
+		"Matrix Gaben": "//i.imgur.com/titbsfQ.png",
+		"Praising Intensifies": "//i.imgur.com/1ynXett.gif",
+		"Ye Olde Wormhole": "//i.imgur.com/vM1gTFY.gif",
+		"Platinum Edition": "//i.imgur.com/JYCNVgH.png" //welcome 2018!
 	};
-	var goldHelmUI = getPreference("praiseGoldHelmImage", goldHelmURLs["Golden Gaben"]);
-	var fixedUI = "http://i.imgur.com/ieDoLnx.png";
-		//- PRAISE LORD GABEN -//
+	var goldHelmUI = getPreference("praiseGoldHelmUI", goldHelmURLs["Golden Gaben"]);
+	var fixedUI = "/assets/images/game_frame_tv.png";
+	var chenUI = "//i.imgur.com/9wmTsxr.png";
+
+	var backgroundURLs = {
+		"Classic Gradient": "//i.imgur.com/5NYUQbq.png",
+		"Ye Olde Wormhole": "//i.imgur.com/P8TB236.jpg",
+		"Dominic The Mobile Apocalypse": "//i.imgur.com/N66dHN1.jpg",
+		"Bob the Helldozer": "//i.imgur.com/jq2EmEO.jpg",
+		"Blitzkrieg the Zombie Tank": "//i.imgur.com/O4hOJF8.jpg",
+		"Cerulean Carmouth the Cen-Car": "//i.imgur.com/x58vf9k.jpg",
+		"Sigmond the Terror-Dactyl": "//i.imgur.com/so0Aqkx.jpg",
+		"Crusta-Sean the Pirate King": "//i.imgur.com/Oheervu.jpg",
+		"Dansky the Wrath of Winter": "//i.imgur.com/EDXVi6Y.jpg",
+		"Dire Frog the Tyrant King": "//i.imgur.com/tPdAn5c.jpg",
+		"Z-Lo the 5th Horseman": "//i.imgur.com/vI7QvAy.jpg",
+		"Gold Helm The Spice Lord": "//i.imgur.com/uhsWoqh.jpg"
+	};
+	var goldHelmBG = getPreference("praiseGoldHelmBG", backgroundURLs["Gold Helm The Spice Lord"]);
+	var fixedBG = "/assets/images/background_top_gradient.png";
+	//- PRAISE LORD GABEN -//
 
 	// DO NOT MODIFY
 	var selfDestructed = false;
@@ -219,13 +239,14 @@
 	}
 
 	function firstRun() {
-		advLog("Starting SteamDB's Steam Summer 2015 Monster Minigame Script.", 1);
+		advLog("Starting Steam Summer 2018 Monster Minigame Script.", 1);
 
 		trt_oldCrit = s().DoCritEffect;
 		trt_oldPush = s().m_rgClickNumbers.push;
 		trt_oldRender = w.g_Minigame.Render;
 
 		toggleFingering();
+		toggleChatbox();
 
 		if(enableElementLock) {
 			lockElements();
@@ -255,20 +276,18 @@
 			toggleAllText();
 		}
 
-		updateLevelInfoTitle(s().m_rgGameData.level + 1, 0);
+		updateLevelInfoTitle(s().m_rgGameData.level, 0);
 
 		// style
 		var styleNode = document.createElement('style');
 		styleNode.type = 'text/css';
 		var styleText = [
-			// Page content
-			".pagecontent {padding: 0}",
 			// Align abilities to the left
 			"#abilitiescontainer {text-align: left;}",
 			// Activitylog and ability list
-			"#activeinlanecontainer:hover {height: auto; background: rgba(50,50,50,0.9); padding-bottom: 10px; position:absolute; z-index: 1;}",
+			/*"#activeinlanecontainer:hover {height: auto; background: rgba(50,50,50,0.9); padding-bottom: 10px; position:absolute; z-index: 1;}",
 			"#activeinlanecontainer:hover + #activitylog {margin-top: 88px;}",
-			"#activitylog {margin-top: 20px}",
+			"#activitylog {margin-top: 20px}",*/
 			// Hide leave game button
 			".leave_game_btn {display: none;}",
 			// Option menu
@@ -277,14 +296,16 @@
 			".game_options .toggle_music_btn {margin-right: 2px; float: right;}",
 			".options_box {background-color: #000; width: 940px; padding: 12px; box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.6); color: #EDEDED; margin: 4px auto 0; overflow: auto; float: left;}",
 			".options_box span.asterisk {color: #FF5252; font-size: 24px; line-height: 4px; vertical-align: bottom;}",
-			".options_column {-moz-column-count: 2; -webkit-column-count: 2; column-count: 2; width: 50%; float: left;}",
-			".options_column label {display: inline-block;}",
-			".options_column input {float: left;}",
-			".options_column input[type=number] {margin: 6px 5px 0 0; padding: 2px 0px 0px 4px;}",
-			".options_column input[name=setLogLevel] {width: 25px;}",
-			".options_column span.asterisk {line-height: 14px;}",
-			// Element lock box
-			".lock_elements_box {top:50px; background-color: #0004; box-sizing: border-box; line-height: 1rem; position: absolute; color: #EDEDED;}",
+			".options_2column {-moz-column-count: 2; -webkit-column-count: 2; column-count: 2; width: 50%; float: left;}",
+			".options_2column label {display: block;}",
+			//".options_2column input {float: left;}",
+			".options_2column span.asterisk {line-height: 14px;}",
+			".options_1column {-moz-column-count: 1; -webkit-column-count: 1; column-count: 1; width: 25%; float: left;}",
+			".options_1column label {display: block;}",
+			//".options_1column input {float: left;}",
+			".options_1column input[type=number] {margin: 6px 5px 0 0; padding: 2px 0px 0px 4px;}",
+			".options_1column input[name=setLogLevel] {width: 25px;}",
+			".options_1column input[name=setClickRate] {width: 50px;}",
 			// Breadcrumbs
 			".bc_span {text-shadow: 1px 1px 0px rgba( 0, 0, 0, 0.3 );}",
 			".bc_room {color: #D4E157;}",
@@ -294,6 +315,16 @@
 			".abilitytemplate > a > .abilityitemquantity {visibility: visible; pointer-events: none;}",
 			// Hide loot notification forever
 			"#loot_notification {display: none !important;}",
+			// Change some stuff because skins make things hard to see
+			"#upgradesscroll, #activityscroll {opacity: 0.75;}",
+			".teamhealth {background: rgba( 240, 240, 255, 0.2 );}",
+			"#upgrades .title_upgrates {color: #DDD;}",
+			"#activitylog .player_activity {background-color: #0004}",
+			".chatform {margin-top: 18px}",
+			// Element lock box
+			".lock_elements_box {top:50px; background-color: #0007; box-sizing: border-box; line-height: 1rem; position: absolute; color: #EDEDED;}",
+			// ;)
+			"#Chen {position: absolute; bottom: 0px; left: 770px; width: 286px; height: 250px; background-image: url(//i.imgur.com/xMbQChA.png); }",
 			""
 		];
 		styleNode.textContent = styleText.join("");
@@ -323,8 +354,6 @@
 			document.body.style.backgroundPosition = "0 0";
 		}
 
-		fixActiveCapacityUI();
-
 		var info_box = document.querySelector(".leave_game_helper");
 		info_box.className = "options_box";
 		info_box.hidden = false;
@@ -336,7 +365,7 @@
 		info_box.innerHTML = '<b>OPTIONS</b>' + (isUserScript ? ' (v' + GM_info.script.version + ')' : '') + '<br>Settings marked with a <span class="asterisk">*</span> requires a refresh to take effect.<hr>';
 
 		var options1 = document.createElement("div");
-		options1.className = "options_column";
+		options1.className = "options_2column";
 
 		options1.appendChild(makeCheckBox("enableAutoClicker", "Enable AutoClicker", enableAutoClicker, toggleAutoClicker, false));
 		options1.appendChild(makeCheckBox("enableOffensiveAbilities", "Enable Offensive ability use", enableOffensiveAbilities, toggleOffensiveAbilities, false));
@@ -356,19 +385,30 @@
 		info_box.appendChild(options1);
 
 		var options2 = document.createElement("div");
-		options2.className = "options_column";
+		options2.className = "options_1column";
 
 		if (isUserScript) {
 			options2.appendChild(makeCheckBox("enableAutoRefresh", "Enable AutoRefresh (mitigate memory leak)", enableAutoRefresh, toggleAutoRefresh, false));
 		}
-
 		options2.appendChild(makeCheckBox("enableFingering", "Enable targeting pointer", enableFingering, toggleFingering, false));
-	  options2.appendChild(makeNumber("setLogLevel", "Change the log level (you shouldn't need to touch this)", logLevel, 0, 5, updateLogLevel));
-	  	//- Say hi to Snoop! -//
-	  options2.appendChild(makeCheckBox("praiseGoldHelm", "Praise Gold Helm!", praiseGoldHelm, togglePraise, false));
-		options2.appendChild(makeDropdown("praiseGoldHelmImage", "", goldHelmUI, goldHelmURLs, changePraiseImage));
+		options2.appendChild(makeCheckBox("enableChatbox", "Enable the chat box", enableChatbox, toggleChatbox, false));
+		options2.appendChild(makeNumber("setLogLevel", "Change the log level (you shouldn't need to touch this)", logLevel, 0, 5, updateLogLevel));
+		//options2.appendChild(makeNumber("setClickRate", "Click/Sec (restart AutoClicker to apply)", clickRate, 0, 100000, updateClickRate));
 
 		info_box.appendChild(options2);
+
+		var options3 = document.createElement("div");
+		options3.className = "options_1column";
+			//- Say hi to Snoop! -//
+		options3.appendChild(makeRadioButton("UI_type", "Honk Honk?", "honkHonk", UI_enabler));
+		options3.appendChild(makeRadioButton("UI_type", "Praise Gold Helm!", "goldHelm", UI_enabler));
+		options3.appendChild(makeRadioButton("UI_type", "Dismiss this offer", "noUI", UI_enabler));
+		options3.appendChild(makeDropdown("praiseGoldHelmUI", "", goldHelmUI, goldHelmURLs, changePraiseImage));
+		options3.appendChild(makeDropdown("praiseGoldHelmBG", "", goldHelmBG, backgroundURLs, changeBGImage));
+
+		info_box.appendChild(options3);
+
+		w.$J('input[name=UI_type][id="' + UI_type + '"]' ).prop('checked', true);
 
 		//Elemental upgrades lock
 		var ab_box = document.getElementById("abilities");
@@ -379,22 +419,89 @@
 		lock_elements_box.appendChild(lock_elements_checkbox);
 		ab_box.appendChild(lock_elements_box);
 
+		// Easter egg
+		w.$J('<a onclick="SmackTV();return false;" style="position:absolute;left:830px;z-index:99;top:584px;"><div style="width:98px;height:52px;"></div></a>').insertAfter(w.$J('.tv_ui'));
+
 		enhanceTooltips();
+
+		fixActiveCapacityUI();
 
 		isPastFirstRun = true;
 	}
 
-		//- Let's steal some functions from wChill -//
-	function fixActiveCapacityUI() {
-		if(praiseGoldHelm) {
-			w.$J('.tv_ui').css('background-image', 'url(' + goldHelmUI + ')');
-			w.$J(".pagecontent").attr("style", "padding-bottom: 0px; background-image: url('http://cdn.akamai.steamstatic.com/steamcommunity/public/images/items/368020/7b933b3766d64ec0525c86891dedb4b699a25fb9.jpg')");
-		} else {
-			w.$J('.tv_ui').css('background-image', 'url(' + fixedUI + ')');
+	//- let's talk about mixmmashing code -//
+
+	function UI_enabler(event) {
+		if (event !== undefined) {
+			UI_type = handleRadioButton(event);
 		}
-		w.$J('#activeinlanecontainer').css('height', '154px');
-		w.$J('#activitycontainer').css('height', '270px');
-		w.$J('#activityscroll').css('height', '270px');
+		fixActiveCapacityUI();
+	}
+
+	function fixActiveCapacityUI() {
+		honkingIntenstifys(false);
+
+		function classicUI() {
+			w.$J('#activeinlanecontainer').css('height', '68px');
+			w.$J('#activitycontainer, #activityscroll').css('height', '360px');
+			w.$J('#activitylog').css('margin-top', '19px');
+		}
+		function noveauUI() {
+			w.$J('#activeinlanecontainer').css('height', '154px');
+			w.$J('#activitycontainer, #activityscroll').css('height', '265px');
+			w.$J('#activitylog').css('margin-top', '28px');
+		}
+
+		if(UI_type == 'goldHelm') { //- Hail Gold Helm!
+
+			w.$J('select[name=praiseGoldHelmUI], select[name=praiseGoldHelmBG]').css('display', 'inline');
+			w.$J('.tv_ui').css('background-image', 'url(' + goldHelmUI + ')');
+			w.$J('body').attr('style', 'background-image: url(' + goldHelmBG + ')');
+
+			//fix the right column when using the YOWM skin
+			goldHelmUI == "//i.imgur.com/vM1gTFY.gif" ? classicUI() : noveauUI();
+
+		} else if (UI_type == 'honkHonk') {
+		//- Who is this 'Chen' you are talking about?
+			w.$J('select[name=praiseGoldHelmUI], select[name=praiseGoldHelmBG]').css('display', 'none');
+			addChen();
+			honkingIntenstifys(isBossLevel(getGameLevel()));
+			w.$J('.tv_ui').css('background-image', 'url(' + chenUI + ')');
+			classicUI();
+			//- honkhonk -//
+
+		} else if (UI_type == 'noUI') { //- return everything to its original form
+			w.$J('select[name=praiseGoldHelmUI], select[name=praiseGoldHelmBG]').css('display', 'none');
+			w.$J('.tv_ui').css('background-image', 'url(' + fixedUI + ')');
+			classicUI();
+		}
+	}
+
+	function makeRadioButton(name, desc, value, listener) {
+
+		var label = document.createElement("label");
+		var description = document.createTextNode(desc);
+		var radio = document.createElement("input");
+
+		radio.type = "radio";
+		radio.name = name;
+		radio.id = value;
+		radio.onclick = listener;
+		w[radio.name] = radio.id;
+
+		label.appendChild(radio);
+		label.appendChild(description);
+
+		label.appendChild(document.createElement("br"));
+		return label;
+	}
+
+	function handleRadioButton(event) {
+		var radio = event.target;
+		setPreference(radio.name, radio.id);
+
+		w[radio.name] = radio.id;
+		return radio.id;
 	}
 
 	function makeDropdown(name, desc, value, values, listener) {
@@ -430,11 +537,38 @@
 		return dropdown.value;
 	}
 
-	function togglePraise(event) {
-		if (event !== undefined) {
-			praiseGoldHelm = handleCheckBox(event);
+	function isBossLevel(level) {
+		return level % 10 === 0
+	}
+
+	function getGameLevel() {
+		return s().m_rgGameData.level;
+	}
+
+	function addChen() {
+		var chenDiv = document.querySelector("#Chen");
+
+		if (!chenDiv) { // We can only handle one Chen D:
+			var chenHTML = document.createElement('div');
+			chenHTML.id = "Chen";
+			document.querySelector("#uicontainer > div.tv_ui").appendChild(chenHTML);
 		}
-		fixActiveCapacityUI();
+	}
+
+	function honkingIntenstifys(isBoss) {
+		var chenDiv = document.querySelector("#Chen");
+
+		if (chenDiv && UI_type=="honkHonk" && isBoss) {
+			chenDiv.style.backgroundImage = "url(//i.imgur.com/eGnE1cD.gif)";
+		} else if (chenDiv && UI_type=="honkHonk") {
+			chenDiv.style.backgroundImage = "url(//i.imgur.com/xMbQChA.png)";
+		}
+
+		if (chenDiv && UI_type!="honkHonk") {
+			chenDiv.style.visibility = "hidden";
+		} else if (chenDiv) {
+			chenDiv.style.visibility = "visible";
+		}
 	}
 
 	function changePraiseImage(event) {
@@ -443,7 +577,15 @@
 		}
 		fixActiveCapacityUI();
 	}
-		//- we are terrible people -//
+
+	function changeBGImage(event) {
+		if (event !== undefined) {
+			goldHelmBG = handleDropdown(event);
+		}
+		fixActiveCapacityUI();
+	}
+
+	//- trust me, I'm an engineer -//
 
 	function disableParticles() {
 		if (w.CSceneGame
@@ -512,7 +654,7 @@
 			return;
 		}
 
-		var level = s().m_rgGameData.level + 1;
+		var level = s().m_rgGameData.level;
 
 		if(level >= w.g_TuningData.universe_level) {
 			render();
@@ -523,13 +665,16 @@
 		if (!isAlreadyRunning) {
 			isAlreadyRunning = true;
 
-			if (level % CONTROL.rainingRounds === 0) {
+			/*if (level % CONTROL.rainingRounds === 0) {
 				goToRainingLane();
 			} else {
 				goToLaneWithBestTarget(level);
-			}
+			}*/
+			goToLaneWithBestTarget(level);
 
 			attemptRespawn();
+
+		  useAbilities(level);
 
 			/*var timeLeft = getTimeleft(); // Time left in minutes
 
@@ -583,7 +728,7 @@
 
 				absoluteCurrentClickRate = currentClickRate;
 				// Disable autoclicking if DPS would be too high against a boss (doubtful but possible?)
-				// Doesn't do very good DPS calculation (ignores crit chance / elem mult) 
+				// Doesn't do very good DPS calculation (ignores crit chance / elem mult)
 				// but should still be very generous
 				if (level >= CONTROL.speedThreshold && levelRainingMod === 0 && enemy && enemy.m_data.type == ENEMY_TYPE.BOSS) {
 					var currentCritMultiplier = s().m_rgPlayerTechTree.damage_multiplier_crit;
@@ -665,11 +810,11 @@
 		// id = ability
 		// ratio = how much of the remaining badges to spend
 		var abilityPriorityList = [
-			{ id: ABILITIES.WORMHOLE,   ratio: 0.97 },
-			{ id: ABILITIES.LIKE_NEW,   ratio: 1 },
-			{ id: ABILITIES.CRIT,       ratio: 1 },
-			{ id: ABILITIES.TREASURE,   ratio: 1 },
-			{ id: ABILITIES.PUMPED_UP,  ratio: 1 },
+			{ id: ABILITIES.WORMHOLE,		ratio: 0.5 },
+			{ id: ABILITIES.LIKE_NEW,		ratio: 1 },
+			{ id: ABILITIES.CRIT,				ratio: 1 },
+			{ id: ABILITIES.TREASURE,		ratio: 1 },
+			{ id: ABILITIES.PUMPED_UP,	ratio: 1 },
 		];
 
 		var badgePoints = s().m_rgPlayerTechTree.badge_points;
@@ -1040,6 +1185,20 @@
 		document.getElementById('newplayer').style.display = 'none';
 	}
 
+	function toggleChatbox(event) {
+		var value = enableChatbox;
+
+		if(event !== undefined) {
+			value = handleCheckBox(event);
+		}
+
+		if(value) {
+			w.$J('.chatform').css('display', 'block');
+		} else {
+			w.$J('.chatform').css('display', 'none');
+		}
+	}
+
 	function toggleAutoRefresh(event) {
 		var value = enableAutoRefresh;
 
@@ -1150,6 +1309,12 @@
 	function updateLogLevel(event) {
 		if(event !== undefined) {
 			logLevel = event.target.value;
+		}
+	}
+
+	function updateClickRate(event) {
+		if(event !== undefined) {
+			clickRate = event.target.value;
 		}
 	}
 
@@ -1282,7 +1447,6 @@
 			s().TryChangeLane(targetLane);
 		}
 	}
-
 
 	function goToLaneWithBestTarget(level) {
 		// We can overlook spawners if all spawners are 40% hp or higher and a creep is under 10% hp
@@ -1437,12 +1601,12 @@
 
 		var levelRainingMod = level % CONTROL.rainingRounds;
 
-		// Prevent attack abilities and items if up against a boss or treasure minion
+		/*/ Prevent attack abilities and items if up against a boss or treasure minion
 		if (targetIsTreasure || (level < CONTROL.speedThreshold || levelRainingMod === 0 || CONTROL.rainingSafeRounds >= (CONTROL.rainingRounds - levelRainingMod))) {
 			BOSS_DISABLED_ABILITIES.forEach(disableAbility);
 		} else {
 			BOSS_DISABLED_ABILITIES.forEach(enableAbility);
-		}
+		}*/
 
 		// Disable raining gold for the first levels
 		if(level < CONTROL.rainingRounds) {
@@ -1512,7 +1676,7 @@
 				if (enemy && enemy.m_data.type == ENEMY_TYPE.BOSS) {
 					enemyBossHealthPercent = enemy.m_flDisplayedHP / enemy.m_data.max_hp;
 
-					if (enemyBossHealthPercent >= 0.6 || level % CONTROL.rainingRounds === 0) { // We want sufficient time for the gold rain to be applicable
+					if (enemyBossHealthPercent >= 0.1 || level % CONTROL.rainingRounds === 0) { // We want sufficient time for the gold rain to be applicable
 						// Gold Rain is purchased, cooled down, and needed. Trigger it.
 						advLog('Gold rain is purchased and cooled down, Triggering it on boss', 2);
 						triggerAbility(ABILITIES.RAINING_GOLD);
@@ -1525,6 +1689,7 @@
 		if(canUseAbility(ABILITIES.METAL_DETECTOR)) {
 
 			enemy = s().GetEnemy(s().m_rgPlayerData.current_lane, s().m_rgPlayerData.target);
+
 			// check if current target is a boss, otherwise we won't use metal detector
 			if (enemy && enemy.m_data.type == ENEMY_TYPE.BOSS) {
 				enemyBossHealthPercent = enemy.m_flDisplayedHP / enemy.m_data.max_hp;
@@ -1535,6 +1700,12 @@
 					advLog('Metal Detector is purchased and cooled down, Triggering it on boss', 2);
 					triggerAbility(ABILITIES.METAL_DETECTOR);
 				}
+			}
+
+			if (enemyBossHealthPercent <= 0.15) { // We want sufficient time for the metal detector to be applicable
+				// Metal Detector is purchased, cooled down, and needed. Trigger it.
+				advLog('Metal Detector is purchased and cooled down, Triggering', 2);
+				triggerAbility(ABILITIES.METAL_DETECTOR);
 			}
 		}
 
@@ -1555,11 +1726,11 @@
 						triggerAbility(ABILITIES.TREASURE);
 					}
 				}
-			}
-			else {
+				else {
 				// Treasure is purchased, cooled down, and needed. Trigger it.
 				advLog('Treasure is purchased and cooled down, triggering it.', 2);
 				triggerAbility(ABILITIES.TREASURE);
+				}
 			}
 		}
 
@@ -1589,12 +1760,12 @@
 			disableAbility(ABILITIES.LIKE_NEW);
 		}
 
-		// Skip doing any damage x levels before upcoming wormhole round
+		/*/ Skip doing any damage x levels before upcoming wormhole round
 		if(!enableOffensiveAbilities || CONTROL.rainingSafeRounds >= (CONTROL.rainingRounds - levelRainingMod)) {
 			tryUsingAbility(ABILITIES.RESURRECTION, true);
 
 			return;
-		}
+		}*/
 
 		// Cripple Monster
 		if(canUseAbility(ABILITIES.CRIPPLE_MONSTER)) {
@@ -1756,7 +1927,7 @@
 		}
 
 		// Resurrect
-		if(level % 10 === 9 && tryUsingAbility(ABILITIES.RESURRECTION)) {
+		if(level % 10 === 0 && tryUsingAbility(ABILITIES.RESURRECTION)) {
 			// Resurrect is purchased and we are using it.
 			advLog('Triggered Resurrect.');
 		}
